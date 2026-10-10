@@ -1,0 +1,145 @@
+{
+  "info": {
+    "name": "Enocta Invoice Mock",
+    "description": "token, viewInvoice ve sendInvoice endpoint'leri. Kaydedilmiş örnek yanıtlar (examples) Postman mock server tarafından döndürülür.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://d947d733-008e-4bc0-b767-b15a327e04ad.mock.pstmn.io" },
+    { "key": "token", "value": "" },
+    { "key": "barcode", "value": "1234567890" }
+  ],
+  "item": [
+    {
+      "name": "token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Token döndü', () => pm.expect(pm.response.json().token).to.be.a('string').and.not.empty);",
+              "pm.collectionVariables.set('token', pm.response.json().token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "user", "value": "testuser" },
+          { "key": "pass", "value": "testpass" }
+        ],
+        "url": { "raw": "{{baseUrl}}/token", "host": ["{{baseUrl}}"], "path": ["token"] }
+      },
+      "response": [
+        {
+          "name": "token - success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              { "key": "user", "value": "testuser" },
+              { "key": "pass", "value": "testpass" }
+            ],
+            "url": { "raw": "{{baseUrl}}/token", "host": ["{{baseUrl}}"], "path": ["token"] }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.mock-token\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "viewInvoice",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Fatura linki döndü', () => pm.expect(pm.response.json().InvoiceLink).to.eql('http://abc.com/invoice.pdf'));",
+              "pm.test('Result.success true', () => pm.expect(pm.response.json().Result.success).to.be.true);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/viewInvoice?barcode={{barcode}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["viewInvoice"],
+          "query": [{ "key": "barcode", "value": "{{barcode}}" }]
+        }
+      },
+      "response": [
+        {
+          "name": "viewInvoice - success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/viewInvoice?barcode=1234567890",
+              "host": ["{{baseUrl}}"],
+              "path": ["viewInvoice"],
+              "query": [{ "key": "barcode", "value": "1234567890" }]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"InvoiceLink\": \"http://abc.com/invoice.pdf\",\n  \"Result\": {\n    \"success\": true\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "sendInvoice",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Result.success true', () => pm.expect(pm.response.json().Result.success).to.be.true);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "token", "value": "{{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"Barcode\": \"{{barcode}}\"\n}" },
+        "url": { "raw": "{{baseUrl}}/sendInvoice", "host": ["{{baseUrl}}"], "path": ["sendInvoice"] }
+      },
+      "response": [
+        {
+          "name": "sendInvoice - success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              { "key": "token", "value": "eyJhbGciOiJIUzI1NiJ9.mock-token" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"Barcode\": \"1234567890\"\n}" },
+            "url": { "raw": "{{baseUrl}}/sendInvoice", "host": ["{{baseUrl}}"], "path": ["sendInvoice"] }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [{ "key": "Content-Type", "value": "application/json" }],
+          "body": "{\n  \"Barcode\": \"1234567890\",\n  \"Result\": {\n    \"success\": true\n  }\n}"
+        }
+      ]
+    }
+  ]
+}

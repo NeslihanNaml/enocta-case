@@ -1,0 +1,14 @@
+# Maven derleme çıktıları ve test raporları
+target/
+
+# Koşum sırasında oluşan API yanıt dosyaları
+test-output/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# İşletim sistemi
+.DS_Store
+Thumbs.db
